@@ -10,6 +10,7 @@ import kaem0n.enums.PublicationSchedule;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Library {
     public static void main(String[] args) {
@@ -31,6 +32,37 @@ public class Library {
             catalog.add(new Magazine(magazineData.industry(), rndmYear, rndmPages, schedules[rndmIndex]));
         }
 
-        catalog.forEach(item -> System.out.println("- " + item));
+        handleCatalog(catalog);
+    }
+
+    public static void handleCatalog(List<PrintedWork> catalog) {
+        Scanner sc = new Scanner(System.in);
+
+        loop: while (true) {
+            System.out.println();
+            System.out.println("CHOOSE AN OPTION (type option number and press Enter):");
+            System.out.println("1. Browse all the catalog");
+            System.out.println("2. Search an item by ISBN Code");
+            System.out.println("3. Search items by publication year");
+            System.out.println("4. Search books by author");
+            System.out.println("5. Add a new item to catalog");
+            System.out.println("6. Remove an item from catalog");
+            System.out.println("7. Save data on disk drive");
+            System.out.println("8. Load data from disk drive");
+            System.out.println("0. Exit");
+            String input = sc.nextLine();
+            switch (input) {
+                case "0" -> {
+                    sc.close();
+                    break loop;
+                }
+                case "1" -> {
+                    System.out.println();
+                    System.out.println("There are " + catalog.size() + " items in the catalog:");
+                    catalog.forEach(item -> System.out.println("- " + item));
+                }
+                default -> System.err.println("Invalid input. Try again.");
+            }
+        }
     }
 }
