@@ -67,6 +67,7 @@ public class Library {
                 }
                 case "2" -> searchByISBN(catalog, sc);
                 case "3" -> searchByPublicationYear(catalog, sc);
+                case "4" -> searchByAuthor(catalog, sc);
                 case "5" -> addItemToCatalog(catalog, sc);
                 case "6" -> deleteItemFromCatalog(catalog, sc);
                 default -> System.err.println("Invalid input. Try again.");
@@ -161,7 +162,7 @@ public class Library {
 
     public static void searchByPublicationYear(List<PrintedWork> catalog, Scanner sc) {
         System.out.println();
-        System.out.println("ENTER A YEAR: ");
+        System.out.println("ENTER A YEAR:");
         while (true) {
             try {
                 int year = Integer.parseInt(sc.nextLine());
@@ -181,6 +182,19 @@ public class Library {
             } catch (NumberFormatException ex) {
                 System.err.println("Error: not a number.");
             }
+        }
+    }
+
+    public static void searchByAuthor(List<PrintedWork> catalog, Scanner sc) {
+        System.out.println();
+        System.out.println("ENTER THE NAME OF THE AUTHOR:");
+        String author = sc.nextLine();
+        List<Book> booksByAuthor = catalog.stream().filter(item -> item instanceof Book).map(item -> (Book) item)
+                .filter(item -> Objects.equals(item.getAuthor(), author)).toList();
+        if (booksByAuthor.isEmpty()) System.err.println("No books were found by author " + author);
+        else {
+            System.out.println(booksByAuthor.size() + " BOOKS FOUND BY AUTHOR " + author + ":");
+            booksByAuthor.forEach(item -> System.out.println("- " + item));
         }
     }
 }
