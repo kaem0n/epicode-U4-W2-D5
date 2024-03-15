@@ -15,6 +15,10 @@ public class Magazine extends PrintedWork {
         this.publicationSchedule = publicationSchedule;
     }
 
+    public PublicationSchedule getPublicationSchedule() {
+        return publicationSchedule;
+    }
+
     public static Magazine createMagazine(Scanner sc) {
         System.out.println();
         System.out.println("ENTER THE TITLE:");

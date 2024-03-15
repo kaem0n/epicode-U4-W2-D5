@@ -7,11 +7,13 @@ import kaem0n.entities.Magazine;
 import kaem0n.entities.PrintedWork;
 import kaem0n.enums.Genre;
 import kaem0n.enums.PublicationSchedule;
+import kaem0n.exceptions.InvalidISBNCodeException;
 
 import java.sql.Array;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 public class Library {
     public static void main(String[] args) {
@@ -64,6 +66,7 @@ public class Library {
                     System.out.println("There are " + catalog.size() + " items in the catalog:");
                     catalog.forEach(item -> System.out.println("- " + item));
                 }
+                case "2" -> searchByISBN(catalog, sc);
                 case "5" -> addItemToCatalog(catalog, sc);
                 case "6" -> deleteItemFromCatalog(catalog, sc);
                 default -> System.err.println("Invalid input. Try again.");
@@ -90,6 +93,7 @@ public class Library {
                 System.out.println(newMagazine);
                 catalog.add(newMagazine);
             }
+            default -> System.err.println("Invalid input.");
         }
     }
 
@@ -99,12 +103,15 @@ public class Library {
         while (true) {
             try {
                 int isbn = Integer.parseInt(sc.nextLine());
+                if (isbn < 100000000 || isbn > 1000000000) {
+                    throw new InvalidISBNCodeException("Error: invalid format; ISBN is composed of 9 integer numbers");
+                }
                 PrintedWork[] itemToRemove = new PrintedWork[1];
                 catalog.forEach(item -> {
                     if (isbn == item.getISBNCode()) itemToRemove[0] = item;
                 });
                 if (itemToRemove[0] != null) {
-                    System.out.println("ITEM FOUND:");
+                    System.out.println("REMOVED ITEM:");
                     System.out.println(itemToRemove[0]);
                     catalog.remove(itemToRemove[0]);
                 } else {
@@ -113,8 +120,42 @@ public class Library {
                 break;
             } catch (NumberFormatException ex) {
                 System.err.println("Error: not a number.");
+            } catch (InvalidISBNCodeException ex) {
+                System.err.println(ex.getMessage());
             }
         }
+    }
 
+    public static void searchByISBN(List<PrintedWork> catalog, Scanner sc) {
+        System.out.println();
+        System.out.println("ENTER A VALID ISBN CODE:");
+        while (true) {
+            try {
+                int isbn = Integer.parseInt(sc.nextLine());
+                if (isbn < 100000000 || isbn > 1000000000) {
+                    throw new InvalidISBNCodeException("Error: invalid format; ISBN is composed of 9 integer numbers");
+                }
+                PrintedWork[] itemFound = new PrintedWork[1];
+                catalog.forEach(item -> {
+                    if (isbn == item.getISBNCode()) itemFound[0] = item;
+                });
+                if (itemFound[0] != null) {
+                    if (itemFound[0] instanceof Book) {
+                        System.out.println("BOOK FOUND WITH ISBN " + isbn + ":");
+                        System.out.println("\"" + itemFound[0].getTitle() + "\" (" + ((Book) itemFound[0]).getGenre() + " - " + itemFound[0].getPublicationYear() + ") by " + ((Book) itemFound[0]).getAuthor());
+                    } else if (itemFound[0] instanceof Magazine) {
+                        System.out.println("MAGAZINE FOUND WITH ISBN " + isbn + ":");
+                        System.out.println("\"" + itemFound[0].getTitle() + "\" (published " + ((Magazine) itemFound[0]).getPublicationSchedule() + " since " + itemFound[0].getPublicationYear() + ")");
+                    }
+                } else {
+                    System.err.println("Error: item not found.");
+                }
+                break;
+            } catch (NumberFormatException ex) {
+                System.err.println("Error: not a number.");
+            } catch (InvalidISBNCodeException ex) {
+                System.err.println(ex.getMessage());
+            }
+        }
     }
 }
