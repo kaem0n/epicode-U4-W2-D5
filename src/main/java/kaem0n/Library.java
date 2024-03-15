@@ -8,11 +8,10 @@ import kaem0n.entities.PrintedWork;
 import kaem0n.enums.Genre;
 import kaem0n.enums.PublicationSchedule;
 import kaem0n.exceptions.InvalidISBNCodeException;
+import kaem0n.exceptions.InvalidPublicationYearException;
 
-import java.sql.Array;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class Library {
@@ -67,6 +66,7 @@ public class Library {
                     catalog.forEach(item -> System.out.println("- " + item));
                 }
                 case "2" -> searchByISBN(catalog, sc);
+                case "3" -> searchByPublicationYear(catalog, sc);
                 case "5" -> addItemToCatalog(catalog, sc);
                 case "6" -> deleteItemFromCatalog(catalog, sc);
                 default -> System.err.println("Invalid input. Try again.");
@@ -155,6 +155,31 @@ public class Library {
                 System.err.println("Error: not a number.");
             } catch (InvalidISBNCodeException ex) {
                 System.err.println(ex.getMessage());
+            }
+        }
+    }
+
+    public static void searchByPublicationYear(List<PrintedWork> catalog, Scanner sc) {
+        System.out.println();
+        System.out.println("ENTER A YEAR: ");
+        while (true) {
+            try {
+                int year = Integer.parseInt(sc.nextLine());
+                if (year < 1900 || year > LocalDate.now().getYear()) {
+                    throw new InvalidPublicationYearException("Error: year must be between 1900 and " + LocalDate.now().getYear() + ".");
+                } else {
+                    List<PrintedWork> itemsByYear = catalog.stream().filter(item -> item.getPublicationYear() == year).toList();
+                    if (itemsByYear.isEmpty()) System.err.println("No items found published in year " + year);
+                    else {
+                        System.out.println(itemsByYear.size() + " ITEMS FOUND FOR YEAR " + year + ":");
+                        itemsByYear.forEach(item -> System.out.println("- " + item));
+                    }
+                }
+                break;
+            } catch (InvalidPublicationYearException ex) {
+                System.err.println(ex.getMessage());
+            } catch (NumberFormatException ex) {
+                System.err.println("Error: not a number.");
             }
         }
     }
