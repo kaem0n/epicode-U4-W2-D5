@@ -208,22 +208,26 @@ public class Library {
                     FileUtils.writeStringToFile(file, "- " + item + System.lineSeparator(), StandardCharsets.UTF_8, true);
                 } catch (IOException ex) {
                     System.err.println(ex.getMessage());
+                    ex.printStackTrace();
                 }
             });
             System.out.println();
             System.out.println("DATA SAVED SUCCESSFULLY.");
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
     public static void loadData(File file) {
         try {
+            String fileContent = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
             System.out.println();
-            System.out.println("SAVED FILE CONTENT:");
-            System.out.println(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
+            System.out.println("LOADED FILE DATA:");
+            System.out.println(fileContent);
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 }
