@@ -71,6 +71,7 @@ public class Library {
                 case "5" -> addItemToCatalog(catalog, sc);
                 case "6" -> deleteItemFromCatalog(catalog, sc);
                 case "7" -> saveData(catalog, file);
+                case "8" -> loadData(file);
                 default -> System.err.println("Invalid input. Try again.");
             }
         }
@@ -201,7 +202,7 @@ public class Library {
 
     public static void saveData(List<PrintedWork> catalog, File file) {
         try {
-            FileUtils.writeStringToFile(file, "Catalog content:" + System.lineSeparator(), StandardCharsets.UTF_8);
+            FileUtils.writeStringToFile(file, "Catalog content (updated: " + new Date() + "):" + System.lineSeparator(), StandardCharsets.UTF_8);
             catalog.forEach(item -> {
                 try {
                     FileUtils.writeStringToFile(file, "- " + item + System.lineSeparator(), StandardCharsets.UTF_8, true);
@@ -209,6 +210,18 @@ public class Library {
                     System.err.println(ex.getMessage());
                 }
             });
+            System.out.println();
+            System.out.println("DATA SAVED SUCCESSFULLY.");
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+    }
+
+    public static void loadData(File file) {
+        try {
+            System.out.println();
+            System.out.println("SAVED FILE CONTENT:");
+            System.out.println(FileUtils.readFileToString(file, StandardCharsets.UTF_8));
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
         }
