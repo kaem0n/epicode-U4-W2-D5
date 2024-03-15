@@ -8,11 +8,10 @@ import kaem0n.entities.PrintedWork;
 import kaem0n.enums.Genre;
 import kaem0n.enums.PublicationSchedule;
 
+import java.sql.Array;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Library {
     public static void main(String[] args) {
@@ -66,6 +65,7 @@ public class Library {
                     catalog.forEach(item -> System.out.println("- " + item));
                 }
                 case "5" -> addItemToCatalog(catalog, sc);
+                case "6" -> deleteItemFromCatalog(catalog, sc);
                 default -> System.err.println("Invalid input. Try again.");
             }
         }
@@ -91,5 +91,30 @@ public class Library {
                 catalog.add(newMagazine);
             }
         }
+    }
+
+    public static void deleteItemFromCatalog(List<PrintedWork> catalog, Scanner sc) {
+        System.out.println();
+        System.out.println("ENTER A VALID ISBN CODE:");
+        while (true) {
+            try {
+                int isbn = Integer.parseInt(sc.nextLine());
+                PrintedWork[] itemToRemove = new PrintedWork[1];
+                catalog.forEach(item -> {
+                    if (isbn == item.getISBNCode()) itemToRemove[0] = item;
+                });
+                if (itemToRemove[0] != null) {
+                    System.out.println("ITEM FOUND:");
+                    System.out.println(itemToRemove[0]);
+                    catalog.remove(itemToRemove[0]);
+                } else {
+                    System.err.println("Error: item not found.");
+                }
+                break;
+            } catch (NumberFormatException ex) {
+                System.err.println("Error: not a number.");
+            }
+        }
+
     }
 }

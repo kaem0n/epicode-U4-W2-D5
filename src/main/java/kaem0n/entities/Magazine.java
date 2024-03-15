@@ -1,6 +1,5 @@
 package kaem0n.entities;
 
-import kaem0n.enums.Genre;
 import kaem0n.enums.PublicationSchedule;
 import kaem0n.exceptions.InvalidPageNumberException;
 import kaem0n.exceptions.InvalidPublicationYearException;
