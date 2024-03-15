@@ -5,8 +5,10 @@ import com.github.javafaker.Faker;
 import kaem0n.entities.Book;
 import kaem0n.entities.Magazine;
 import kaem0n.entities.PrintedWork;
+import kaem0n.enums.Genre;
 import kaem0n.enums.PublicationSchedule;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -18,15 +20,17 @@ public class Library {
 
         List<PrintedWork> catalog = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
+            Genre[] genres = {Genre.DRAMA, Genre.FANTASY, Genre.HORROR, Genre.ROMANCE};
             com.github.javafaker.Book bookData = faker.book();
-            int rndmYear = new Random().nextInt(1900, 2024);
+            int rndmYear = new Random().nextInt(1900, LocalDate.now().getYear());
             int rndmPages = new Random().nextInt(100, 801);
-            catalog.add(new Book(bookData.title(), bookData.author(), bookData.genre(), rndmYear, rndmPages));
+            int rndmIndex = new Random().nextInt(0, genres.length);
+            catalog.add(new Book(bookData.title(), bookData.author(), genres[rndmIndex], rndmYear, rndmPages));
         }
         for (int i = 0; i < 10; i++) {
             PublicationSchedule[] schedules = {PublicationSchedule.WEEKLY, PublicationSchedule.MONTHLY, PublicationSchedule.SEMIANNUALLY };
             Company magazineData = faker.company();
-            int rndmYear = new Random().nextInt(1950, 2024);
+            int rndmYear = new Random().nextInt(1950, LocalDate.now().getYear());
             int rndmPages = new Random().nextInt(15, 60);
             int rndmIndex = new Random().nextInt(0, schedules.length);
             catalog.add(new Magazine(magazineData.industry(), rndmYear, rndmPages, schedules[rndmIndex]));
@@ -61,7 +65,30 @@ public class Library {
                     System.out.println("There are " + catalog.size() + " items in the catalog:");
                     catalog.forEach(item -> System.out.println("- " + item));
                 }
+                case "5" -> addItemToCatalog(catalog, sc);
                 default -> System.err.println("Invalid input. Try again.");
+            }
+        }
+    }
+
+    public static void addItemToCatalog(List<PrintedWork> catalog, Scanner sc) {
+        System.out.println();
+        System.out.println("WHAT KIND OF ITEM DO YOU WANT TO ADD?");
+        System.out.println("1. Book");
+        System.out.println("2. Magazine");
+        String itemType = sc.nextLine();
+        switch (itemType) {
+            case "1" -> {
+                Book newBook = Book.createBook(sc);
+                System.out.println("New book added:");
+                System.out.println(newBook);
+                catalog.add(newBook);
+            }
+            case "2" -> {
+                Magazine newMagazine = Magazine.createMagazine(sc);
+                System.out.println("New magazine added:");
+                System.out.println(newMagazine);
+                catalog.add(newMagazine);
             }
         }
     }
