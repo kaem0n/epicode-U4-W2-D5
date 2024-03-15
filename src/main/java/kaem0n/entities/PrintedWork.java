@@ -9,7 +9,7 @@ public abstract class PrintedWork {
     protected final int pages;
 
     protected PrintedWork(String title, int publicationYear, int pages) {
-        this.ISBNCode = new Random().nextLong();
+        this.ISBNCode = new Random().nextInt(100000000, 1000000000);
         this.title = title;
         this.publicationYear = publicationYear;
         this.pages = pages;

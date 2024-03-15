@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ApplicationTest {
+class LibraryTest {
 
     @Test
     void shouldAnswerWithTrue() {
