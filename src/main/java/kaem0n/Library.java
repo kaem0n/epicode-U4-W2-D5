@@ -9,13 +9,17 @@ import kaem0n.enums.Genre;
 import kaem0n.enums.PublicationSchedule;
 import kaem0n.exceptions.InvalidISBNCodeException;
 import kaem0n.exceptions.InvalidPublicationYearException;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Library {
     public static void main(String[] args) {
+        File file = new File("src/data.txt");
         Faker faker = new Faker();
 
         List<PrintedWork> catalog = new ArrayList<>();
@@ -36,10 +40,6 @@ public class Library {
             catalog.add(new Magazine(magazineData.industry(), rndmYear, rndmPages, schedules[rndmIndex]));
         }
 
-        handleCatalog(catalog);
-    }
-
-    public static void handleCatalog(List<PrintedWork> catalog) {
         Scanner sc = new Scanner(System.in);
 
         loop: while (true) {
@@ -70,6 +70,7 @@ public class Library {
                 case "4" -> searchByAuthor(catalog, sc);
                 case "5" -> addItemToCatalog(catalog, sc);
                 case "6" -> deleteItemFromCatalog(catalog, sc);
+                case "7" -> saveData(catalog, file);
                 default -> System.err.println("Invalid input. Try again.");
             }
         }
@@ -195,6 +196,21 @@ public class Library {
         else {
             System.out.println(booksByAuthor.size() + " BOOKS FOUND BY AUTHOR " + author + ":");
             booksByAuthor.forEach(item -> System.out.println("- " + item));
+        }
+    }
+
+    public static void saveData(List<PrintedWork> catalog, File file) {
+        try {
+            FileUtils.writeStringToFile(file, "Catalog content:" + System.lineSeparator(), StandardCharsets.UTF_8);
+            catalog.forEach(item -> {
+                try {
+                    FileUtils.writeStringToFile(file, "- " + item + System.lineSeparator(), StandardCharsets.UTF_8, true);
+                } catch (IOException ex) {
+                    System.err.println(ex.getMessage());
+                }
+            });
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
         }
     }
 }
